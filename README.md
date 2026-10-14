@@ -31,6 +31,25 @@ pip install git+https://github.com/fra31/auto-attack
 | `global.py` | Neural ODE followed by a classifier, with FGSM |
 | `train_cifar_classifier.py` | Classifier training script (ResNet-18) |
 
+## Pretrained score models
+
+For CIFAR-10 we use the pretrained score models released by Song et al. for
+[score_sde_pytorch](https://github.com/yang-song/score_sde_pytorch). All of their checkpoints are in
+[this Google Drive folder](https://drive.google.com/drive/folders/1tFmF_uh57O6lx9ggtZT_5LdonVK2cV-e?usp=sharing).
+The two we use are:
+
+| Config | Checkpoint folder |
+|---|---|
+| `configs/score_configs/ve/cifar10_ncsnpp_continuous.py` | [`ve/cifar10_ncsnpp_continuous/`](https://drive.google.com/drive/folders/1b0gy_LLgO_DaQBgoWXwlVnL_rcAUgREh?usp=sharing) |
+| `configs/score_configs/ve/cifar10_ncsnpp_deep_continuous.py` | [`ve/cifar10_ncsnpp_deep_continuous/`](https://drive.google.com/drive/folders/11s6A_xM7qiztdj8AHQWqaIAUSC3I7uX2?usp=sharing) |
+
+Download the `.pth` file from the folder, save it for instance as `checkpoints/score_cifar10_ncsnpp_deep_cont.pth`
+and pass it to `evaluate.py` with `--score_ckpt`. The configuration given with `--score_config` must match the checkpoint.
+
+For DermaMNIST and PneumoniaMNIST we train the score model ourselves with
+`training/score_training/main.py` (configs `dermamnist_ncsnpp_continuous_*.py` and `pneumonia_256_ncsnpp_continuous.py`).
+These checkpoints are not included in the repository.
+
 ## Usage
 
 **1. Train a score model** (from the repository root):
@@ -64,6 +83,23 @@ Main options of `evaluate.py`: `--sigma`, `--t_noise` (noise level before the fl
 
 Datasets are downloaded to `data/` on first use. Checkpoints are not included in the
 repository.
+
+## Qualitative results
+
+Each figure shows, from top to bottom, the clean images, the images perturbed by an FGSM attack
+(ε = 0.031), the images corrected by the score flow, and the residuals.
+
+**CIFAR-10**
+
+![CIFAR-10](assets/denoising_cifar10.png)
+
+**DermaMNIST**
+
+![DermaMNIST](assets/denoising_dermamnist.jpg)
+
+**PneumoniaMNIST**
+
+![PneumoniaMNIST](assets/denoising_pneumoniamnist.jpg)
 
 ## Citation
 
